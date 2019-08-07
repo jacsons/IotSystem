@@ -1,0 +1,100 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ALIGN	uart/lib1funcs.S	/^#define ALIGN		.align 4,0x90$/;"	d
+ENTRY	uart/lib1funcs.S	/^#define ENTRY(name) \\$/;"	d
+Ldiv0	uart/lib1funcs.S	/^Ldiv0:$/;"	l
+MAX_NUMBER_BYTES	uart/uart_printf.h	6;"	d
+NULL	uart/string_utils.c	3;"	d	file:
+_C	uart/string_utils.c	13;"	d	file:
+_D	uart/string_utils.c	12;"	d	file:
+_INTSIZEOF	uart/uart_printf.c	5;"	d	file:
+_L	uart/string_utils.c	11;"	d	file:
+_P	uart/string_utils.c	14;"	d	file:
+_S	uart/string_utils.c	15;"	d	file:
+_SP	uart/string_utils.c	17;"	d	file:
+_STRING_UTILS_H	uart/string_utils.h	2;"	d
+_U	uart/string_utils.c	10;"	d	file:
+_UART_H	uart/uart.h	4;"	d
+_UART_PRINTF_H	uart/uart_printf.h	2;"	d
+_X	uart/string_utils.c	16;"	d	file:
+__IOT_UART_H__	uart_my/uart.h	2;"	d
+__LINUX_ARM_ARCH__	uart/lib1funcs.S	/^#define __LINUX_ARM_ARCH__  1$/;"	d
+__ismask	uart/string_utils.c	46;"	d	file:
+__out_putchar	uart/uart_printf.h	4;"	d
+__tolower	uart/string_utils.c	/^static inline unsigned char __tolower(unsigned char c)$/;"	f	file:	signature:(unsigned char c)
+__toupper	uart/string_utils.c	/^static inline unsigned char __toupper(unsigned char c)$/;"	f	file:	signature:(unsigned char c)
+_ctype	uart/string_utils.c	/^unsigned char _ctype[] = {$/;"	v
+_start	asm/start.S	/^_start:$/;"	l
+_start	led/start.S	/^_start:$/;"	l
+delay	led/led_on.c	/^void delay(volatile unsigned int delay_time)$/;"	f	signature:(volatile unsigned int delay_time)
+delay	uart_my/led_on.c	/^void delay(volatile unsigned int delay_time)$/;"	f	signature:(volatile unsigned int delay_time)
+get_char	uart_my/uart.c	/^char get_char()$/;"	f
+get_char	uart_my/uart.h	/^char get_char();$/;"	p	signature:()
+get_int	uart/string_utils.c	/^int get_int(void)$/;"	f	signature:(void)
+get_int	uart/string_utils.h	/^int get_int(void);$/;"	p	signature:(void)
+get_uint	uart/string_utils.c	/^unsigned int get_uint(void)$/;"	f	signature:(void)
+get_uint	uart/string_utils.h	/^unsigned int get_uint(void);$/;"	p	signature:(void)
+getchar	uart/uart.c	/^int getchar(void)$/;"	f	signature:(void)
+getchar	uart/uart.h	/^int getchar(void);$/;"	p	signature:(void)
+gets	uart/string_utils.c	/^char *gets(char s[])$/;"	f	signature:(char s[])
+gets	uart/string_utils.h	/^char *gets(char s[]);$/;"	p	signature:(char s[])
+halt	asm/start.S	/^halt:$/;"	l
+halt	led/start.S	/^halt:$/;"	l
+hex_tab	uart/uart_printf.c	/^unsigned char hex_tab[]={'0','1','2','3','4','5','6','7',\\$/;"	v
+isalnum	uart/string_utils.c	48;"	d	file:
+isalpha	uart/string_utils.c	49;"	d	file:
+isascii	uart/string_utils.c	66;"	d	file:
+isblank	uart/string_utils.c	64;"	d	file:
+iscntrl	uart/string_utils.c	50;"	d	file:
+isdigit	uart/string_utils.c	51;"	d	file:
+isgraph	uart/string_utils.c	52;"	d	file:
+islower	uart/string_utils.c	53;"	d	file:
+isprint	uart/string_utils.c	54;"	d	file:
+ispunct	uart/string_utils.c	55;"	d	file:
+isspace	uart/string_utils.c	56;"	d	file:
+isupper	uart/string_utils.c	57;"	d	file:
+isxdigit	uart/string_utils.c	58;"	d	file:
+led_on	led/led_on.c	/^void led_on(unsigned int i)$/;"	f	signature:(unsigned int i)
+led_on	uart_my/led_on.c	/^void led_on(unsigned int i)$/;"	f	signature:(unsigned int i)
+main	uart_my/main.c	/^int main()$/;"	f
+my_printf_test	uart/uart_printf.c	/^int my_printf_test(void)$/;"	f	signature:(void)
+my_printf_test	uart/uart_printf.h	/^extern int my_printf_test(void);$/;"	p	signature:(void)
+my_vprintf	uart/uart_printf.c	/^static int my_vprintf(const char *fmt, va_list ap)$/;"	f	file:	signature:(const char *fmt, va_list ap)
+name	uart/lib1funcs.S	/^  name:$/;"	l
+out_num	uart/uart_printf.c	/^static int out_num(long n, int base,char lead,int maxwidth)$/;"	f	file:	signature:(long n, int base,char lead,int maxwidth)
+outc	uart/uart_printf.c	/^static int outc(int c)$/;"	f	file:	signature:(int c)
+outs	uart/uart_printf.c	/^static int outs (const char *s)$/;"	f	file:	signature:(const char *s)
+print1	uart/uart.c	/^void print1(void)$/;"	f	signature:(void)
+print2	uart/uart.c	/^void print2(void)$/;"	f	signature:(void)
+printHex	uart/uart.c	/^void printHex(unsigned int val)$/;"	f	signature:(unsigned int val)
+printHex	uart/uart.h	/^void printHex(unsigned int val);$/;"	p	signature:(unsigned int val)
+printSWIVal	uart/uart.c	/^void printSWIVal(unsigned int *pSWI)$/;"	f	signature:(unsigned int *pSWI)
+printf	uart/uart_printf.c	/^int printf(const char *fmt, ...)$/;"	f	signature:(const char *fmt, ...)
+printf	uart/uart_printf.h	/^int printf(const char *fmt, ...);$/;"	p	signature:(const char *fmt, ...)
+put_char	uart_my/uart.c	/^int put_char(int c)$/;"	f	signature:(int c)
+put_char	uart_my/uart.h	/^int  put_char(int c);$/;"	p	signature:(int c)
+put_chars	uart_my/uart.c	/^int put_chars(const char *s)$/;"	f	signature:(const char *s)
+put_chars	uart_my/uart.h	/^int put_chars(const char *s);$/;"	p	signature:(const char *s)
+putchar	uart/uart.c	/^int putchar(int c)$/;"	f	signature:(int c)
+putchar	uart/uart.h	/^int putchar(int c);$/;"	p	signature:(int c)
+puts	uart/uart.c	/^int puts(const char *s)$/;"	f	signature:(const char *s)
+puts	uart/uart.h	/^int puts(const char *s);$/;"	p	signature:(const char *s)
+simple_strtol	uart/string_utils.c	/^long simple_strtol(const char *cp,char **endp,unsigned int base)$/;"	f	signature:(const char *cp,char **endp,unsigned int base)
+simple_strtol	uart/string_utils.h	/^long simple_strtol(const char *cp,char **endp,unsigned int base);$/;"	p	signature:(const char *cp,char **endp,unsigned int base)
+simple_strtoul	uart/string_utils.c	/^unsigned long simple_strtoul(const char *cp,char **endp,unsigned int base)$/;"	f	signature:(const char *cp,char **endp,unsigned int base)
+toascii	uart/string_utils.c	67;"	d	file:
+tolower	uart/string_utils.c	83;"	d	file:
+toupper	uart/string_utils.c	84;"	d	file:
+uart0_init	uart/uart.c	/^void uart0_init()$/;"	f
+uart0_init	uart/uart.h	/^void uart0_init();$/;"	p	signature:()
+uart0_init	uart_my/uart.c	/^void uart0_init()$/;"	f
+uart0_init	uart_my/uart.h	/^void uart0_init();$/;"	p	signature:()
+uart_sprint	uart_my/uart.c	/^int uart_sprint(const char *format, ...)$/;"	f	signature:(const char *format, ...)
+va_arg	uart/uart_printf.c	9;"	d	file:
+va_end	uart/uart_printf.c	10;"	d	file:
+va_list	uart/uart_printf.c	/^typedef char *  va_list;$/;"	t	file:
+va_start	uart/uart_printf.c	7;"	d	file:
