@@ -1,5 +1,5 @@
 #ifndef __RESULT_MACRO_H__
-#define __RESULT_MACRO_H_
+#define __RESULT_MACRO_H__
 
 #define ASSERT_RET(a, v) do{    \
     if(!(a) {                   \
