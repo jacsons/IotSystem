@@ -8,21 +8,27 @@
 #include <stdarg.h>
 
 #include "log_util.h"
-#include "ComMacro.h"
+#include "zmerror.h"
+#include "common.h"
 
+
+
+#define SPRINT_LOG_BUFF_LEN 512
+#define SPRINT_LOG_TIME_LEN 40
 #define DEFAULT_LOG_LEVEL 5
 
 void logUtil(unsigned int lev,const char *msg,...);
 
 
 FILE *fp = NULL;
+
 STATIC int init_file_point(void)
 {
 	if(NULL==fp) {
 		fp = fopen("/var/test.log","a+");
 	}
 
-	return fp != NULL ? 0 : 1;
+	return fp != NULL ? ZM_OK : ZM_ERROR;
 }
 
 STATIC void add_time_tag(char *dst,int bufsize,const char *format,...)
@@ -39,33 +45,27 @@ void logUtil(unsigned int lev,const char *msg,...)
 {
 	int len = 0,mal_flag = 0, bufsize = 0;
 	char *ptr = NULL;
-	char buf[512] = {0};
+	char buf[SPRINT_LOG_BUFF_LEN] = {0};
 
 	if (lev <= DEFAULT_LOG_LEVEL) {
 		va_list ap;
-		openlog("tag",LOG_PID,LOG_USER);
+
 		va_start(ap,msg);
 
-		if( (flag_pf) || (lev==LOG_ERR) )
-		{
+		if (lev == LOG_ERR) {
 			len = strlen(msg);
-			if(len<(512-40))
-			{
+
+			if (len < (SPRINT_LOG_BUFF_LEN - SPRINT_LOG_TIME_LEN)) {
 				ptr = buf;
-				bufsize = 512;
-			}
-			else
-			{
+				bufsize = SPRINT_LOG_BUFF_LEN;
+			} else {
 				mal_flag = 1;
-				bufsize = len + 40;
+				bufsize = len + SPRINT_LOG_TIME_LEN;
 				ptr = (char *)malloc(bufsize);
 				bzero(ptr,bufsize);
 			}
-			add_time_tag(ptr,bufsize,msg);
-		}
 
-		if(flag_pf) {
-			vprintf(ptr,ap);
+			add_time_tag(ptr,bufsize,msg);
 		}
 
 		if( (NULL != fp) && (lev==LOG_ERR)) { //如果级别是错误，同时打印到File流文件
@@ -77,9 +77,7 @@ void logUtil(unsigned int lev,const char *msg,...)
 		}
 
 		vsyslog(lev,msg,ap);   //syslog有时间前缀，所有不使用增加前缀的ptr指针
-
 		va_end(ap);
-		closelog();
 	}
 }
 

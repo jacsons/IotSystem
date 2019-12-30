@@ -7,7 +7,6 @@
 #define NULL ((void *)0)
 
 
-
-
+#define STATIC static
 
 #endif

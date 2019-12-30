@@ -1,4 +1,4 @@
-include ./build/core/main.mk
+#include ./build/core/main.mk
 
 
 
