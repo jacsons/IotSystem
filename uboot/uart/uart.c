@@ -14,36 +14,37 @@
 #define URXH0               (*(volatile unsigned char *)0x50000024)
 #define UBRDIV0             (*(volatile unsigned long *)0x50000028)
 
-#define PCLK            50000000    // init.c中的clock_init函数设置PCLK为50MHz
-#define UART_CLK        PCLK        //  UART0的时钟源设为PCLK
-#define UART_BAUD_RATE  115200      // 波特率
+#define PCLK            50000000    // init.c锟叫碉拷clock_init锟斤拷锟斤拷锟斤拷锟斤拷PCLK为50MHz
+#define UART_CLK        PCLK        //  UART0锟斤拷时锟斤拷源锟斤拷为PCLK
+#define UART_BAUD_RATE  115200      // 锟斤拷锟斤拷锟斤拷
 #define UART_BRD        ((UART_CLK  / (UART_BAUD_RATE * 16)) - 1)
 
+#define TXD0READY   (1<<2)
 /*
- * 初始化UART0
- * 115200,8N1,无流控
+ * 锟斤拷始锟斤拷UART0
+ * 115200,8N1,锟斤拷锟斤拷锟斤拷
  */
 void uart0_init(void)
 {
-    GPHCON  |= 0xa0;    // GPH2,GPH3用作TXD0,RXD0
-    GPHUP   = 0x0c;     // GPH2,GPH3内部上拉
+    GPHCON  |= 0xa0;    // GPH2,GPH3锟斤拷锟斤拷TXD0,RXD0
+    GPHUP   = 0x0c;     // GPH2,GPH3锟节诧拷锟斤拷锟斤拷
     
-    ULCON0  = 0x03;     // 8N1(8个数据位，无较验，1个停止位)
-    UCON0   = 0x05;     // 查询方式，UART时钟源为PCLK
-    UFCON0  = 0x00;     // 不使用FIFO
-    UMCON0  = 0x00;     // 不使用流控
-    UBRDIV0 = UART_BRD; // 波特率为115200
+    ULCON0  = 0x03;     // 8N1(8锟斤拷锟斤拷锟斤拷位锟斤拷锟睫斤拷锟介，1锟斤拷停止位)
+    UCON0   = 0x05;     // 锟斤拷询锟斤拷式锟斤拷UART时锟斤拷源为PCLK
+    UFCON0  = 0x00;     // 锟斤拷使锟斤拷FIFO
+    UMCON0  = 0x00;     // 锟斤拷使锟斤拷锟斤拷锟斤拷
+    UBRDIV0 = UART_BRD; // 锟斤拷锟斤拷锟斤拷为115200
 }
 
 /*
- * 发送一个字符
+ * 锟斤拷锟斤拷一锟斤拷锟街凤拷
  */
 void putc(unsigned char c)
 {
-    /* 等待，直到发送缓冲区中的数据已经全部发送出去 */
+    /* 锟饺达拷锟斤拷直锟斤拷锟斤拷锟酵伙拷锟斤拷锟斤拷锟叫碉拷锟斤拷锟斤拷锟窖撅拷全锟斤拷锟斤拷锟酵筹拷去 */
     while (!(UTRSTAT0 & TXD0READY));
     
-    /* 向UTXH0寄存器中写入数据，UART即自动将它发送出去 */
+    /* 锟斤拷UTXH0锟侥达拷锟斤拷锟斤拷写锟斤拷锟斤拷锟捷ｏ拷UART锟斤拷锟皆讹拷锟斤拷锟斤拷锟斤拷锟酵筹拷去 */
     UTXH0 = c;
 }
 
@@ -76,7 +77,7 @@ void puthex(unsigned int val)
 
 void uart_register(struct UartCmd *uartCmd)
 {
-	if (uartCmd == NULL) {
+	if (uartCmd == (void *)0) {
 		return;
 	}
 	

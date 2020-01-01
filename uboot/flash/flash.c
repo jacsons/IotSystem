@@ -16,18 +16,40 @@ static int isBootFromNorFlash(void)
 	}
 }
 
-struct FlashCmd *flash_cmd_init(struct FlashCmd *cmd)
-{
-	if (cmd == NULL) {
-		return;
-	}
+void copy_code_to_sdram(unsigned char *src, unsigned char *dest, unsigned int len)
+{	
+	int i = 0;
 	
 	if (isBootFromNorFlash()) {
-			cmd->flash_init = nand_init;
-			cmd->flash_read = nand_read;
-			cmd->flash_write = NULL;
-			cmd->flash_clean = NULL;
+		while (i < len) {
+			dest[i] = src[i];
+			i++;
+		}
+	} else {
+		nand_read((unsigned int)src, dest, len);
 	}
+}
+
+void clear_bss(void)
+{
+	extern int __bss_start, __bss_end;
+	int *p = &__bss_start;
 	
-	return;
+	for (; p < &__bss_end; p++) {
+		*p = 0;
+	}
+}
+
+struct FlashCmd *flash_cmd_init(struct FlashCmd *cmd)
+{
+	if (cmd == (void *)0) {
+		return cmd;
+	}
+
+	cmd->flash_init = nand_init;
+	cmd->flash_read = nand_read;
+	cmd->flash_write = (void *)0;
+	cmd->flash_clean = (void *)0;
+
+	return cmd;
 }

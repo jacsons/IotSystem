@@ -6,7 +6,7 @@ struct UartCmd {
 	void (*puts)(char *str);
 	void (*puthex)(unsigned int val);
 	void (*putc)(unsigned char c);
-}
+};
 
 void uart_register(struct UartCmd *uartCmd);
 

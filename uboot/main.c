@@ -71,38 +71,32 @@ int main(void)
 	void (*theKernel)(int zero, int arch, unsigned int params);
 	volatile unsigned int *p = (volatile unsigned int *)0x30008000;
 
-	/* 0. 帮内核设置串口: 内核启动的开始部分会从串口打印一些信息,但是内核一开始没有初始化串口 */
 	uart_register(&uartCmd);
-	uartCmd.uart0_init();
-	
-	
-	/* 1. 从NAND FLASH里把内核读入内存 */
+	uartCmd.uart_init();
 	uartCmd.puts("Copy kernel from nand\n\r");
 	
 	flash_cmd_init(&flashCmd);
+	uartCmd.puts("flash_cmd_init\n\r");
 	flashCmd.flash_init();
+	uartCmd.puts("flash_init\n\r");
 	flashCmd.flash_read(0x60000+64, (unsigned char *)0x30008000, 0x200000);
-	
+	uartCmd.puts("flash_read\n\r");
 	uartCmd.puthex(0x1234ABCD);
 	uartCmd.puts("\n\r");
 	uartCmd.puthex(*p);
 	uartCmd.puts("\n\r");
 
-	/* 2. 设置参数 */
-	puts("Set boot params\n\r");
+	uartCmd.puts("Set boot params\n\r");
 	setup_start_tag();
 	setup_memory_tags();
 	setup_commandline_tag("noinitrd root=/dev/mtdblock3 init=/linuxrc console=ttySAC0");
 	setup_end_tag();
 
-	/* 3. 跳转执行 */
-	puts("Boot kernel\n\r");
+	uartCmd.puts("Boot kernel\n\r");
 	theKernel = (void (*)(int, int, unsigned int))0x30008000;
 	theKernel(0, 362, 0x30000100);  
 
-
-	puts("Error!\n\r");
-	/* 如果一切正常, 不会执行到这里 */
+	uartCmd.puts("Error!\n\r");
 
 	return -1;
 }
