@@ -66,7 +66,7 @@ void puthex(unsigned int val)
 	puts("0x");
 
 	for (i = 0; i < 8; i++) {
-		j = (val >> ((7-i)*4)) & 0xf;
+		j = (val >> ((7 - i) * 4)) & 0xf;
 		if ((j >= 0) && (j <= 9)) {
 			putc('0' + j);
 		} else {

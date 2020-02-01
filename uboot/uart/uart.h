@@ -8,6 +8,13 @@ struct UartCmd {
 	void (*putc)(unsigned char c);
 };
 
+/*****************************************************************************
+* Function: 
+* Description: 
+* param {type} Do not edit
+* Output: None
+* Return: void
+***************************************************************************/
 void uart_register(struct UartCmd *uartCmd);
 
 #endif

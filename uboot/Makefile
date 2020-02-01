@@ -4,16 +4,16 @@ AR      = arm-linux-ar
 OBJCOPY = arm-linux-objcopy
 OBJDUMP = arm-linux-objdump
 
-CFLAGS 		:= -Wall -O2
+CFLAGS 		:= -Wall -O2 
 CPPFLAGS   	:= -nostdinc -nostdlib -fno-builtin
 
 INCLUDE := -I ./flash -I ./flash/nand \
-	-I ./uart/
+	-I ./uart/ -I ./log
 
-SRCS := ./flash/flash.c ./flash/nand/nand.c \
+SRCS := ./flash/flash.c ./flash/nand/nand.c ./log/log.c\
 	./uart/uart.c ./main.c
 
-objs := start.o
+objs := start.o lib1funcs.o
 objs += $(SRCS:.c=.o)
 
 boot.bin: $(objs)

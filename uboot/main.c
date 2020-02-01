@@ -1,6 +1,15 @@
-#include "uart.h"
+/*****************************************************************************
+* Copyright: 2020-2030, ***oak***
+* file name: 
+* Description: 
+* Author: oak
+* Version: v-0.0.1
+* Date: 2020-02-01 16:21:20
+* History: 
+***************************************************************************/
 #include "flash.h"
 #include "setup.h"
+#include "log.h"
 
 static struct tag *params;
 
@@ -66,37 +75,30 @@ void setup_end_tag(void)
 
 int main(void)
 {
-	struct UartCmd uartCmd;
 	struct FlashCmd flashCmd;
 	void (*theKernel)(int zero, int arch, unsigned int params);
 	volatile unsigned int *p = (volatile unsigned int *)0x30008000;
 
-	uart_register(&uartCmd);
-	uartCmd.uart_init();
-	uartCmd.puts("Copy kernel from nand\n\r");
-	
-	flash_cmd_init(&flashCmd);
-	uartCmd.puts("flash_cmd_init\n\r");
-	flashCmd.flash_init();
-	uartCmd.puts("flash_init\n\r");
-	flashCmd.flash_read(0x60000+64, (unsigned char *)0x30008000, 0x200000);
-	uartCmd.puts("flash_read\n\r");
-	uartCmd.puthex(0x1234ABCD);
-	uartCmd.puts("\n\r");
-	uartCmd.puthex(*p);
-	uartCmd.puts("\n\r");
+	LOG_INFO("Copy kernel from nand\n\r");
 
-	uartCmd.puts("Set boot params\n\r");
+	flash_cmd_init(&flashCmd);
+	LOG_INFO("flash_cmd_init\n\r");
+	flashCmd.flash_init();
+	LOG_INFO("flash_init\n\r");
+	flashCmd.flash_read(0x60000 + 64, (unsigned char *)0x30008000, 0x200000);
+	LOG_INFO("flash_read p = %u.\n\r", *p);
+
+	LOG_INFO("start set boot params\n\r");
 	setup_start_tag();
 	setup_memory_tags();
 	setup_commandline_tag("noinitrd root=/dev/mtdblock3 init=/linuxrc console=ttySAC0");
 	setup_end_tag();
 
-	uartCmd.puts("Boot kernel\n\r");
+	LOG_INFO("Boot kernel\n\r");
 	theKernel = (void (*)(int, int, unsigned int))0x30008000;
-	theKernel(0, 362, 0x30000100);  
+	theKernel(0, 362, 0x30000100);
 
-	uartCmd.puts("Error!\n\r");
+	LOG_ERR("Error!\n\r");
 
 	return -1;
 }
