@@ -1,3 +1,12 @@
+/*****************************************************************************
+* Copyright: 2020-2030, ***oak***
+* file name: 
+* Description: 
+* Author: oak
+* Version: v-0.0.1
+* Date: 2020-03-01 10:45:47
+* History: 
+***************************************************************************/
 #include "uart.h"
 
 /* GPIO */
@@ -14,9 +23,9 @@
 #define URXH0               (*(volatile unsigned char *)0x50000024)
 #define UBRDIV0             (*(volatile unsigned long *)0x50000028)
 
-#define PCLK            50000000    // init.c�е�clock_init��������PCLKΪ50MHz
-#define UART_CLK        PCLK        //  UART0��ʱ��Դ��ΪPCLK
-#define UART_BAUD_RATE  115200      // ������
+#define PCLK            50000000    
+#define UART_CLK        PCLK       
+#define UART_BAUD_RATE  115200     
 #define UART_BRD        ((UART_CLK  / (UART_BAUD_RATE * 16)) - 1)
 
 #define TXD0READY   (1<<2)
@@ -41,10 +50,7 @@ void uart0_init(void)
  */
 void putc(unsigned char c)
 {
-    /* �ȴ���ֱ�����ͻ������е������Ѿ�ȫ�����ͳ�ȥ */
     while (!(UTRSTAT0 & TXD0READY));
-    
-    /* ��UTXH0�Ĵ�����д�����ݣ�UART���Զ��������ͳ�ȥ */
     UTXH0 = c;
 }
 
