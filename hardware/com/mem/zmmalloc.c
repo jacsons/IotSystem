@@ -66,6 +66,7 @@ void *zmmalloc(size_t size)
     if (!ptr)
     {
         zmalloc_oom_handler(size);
+        return NULL;
     }
 
     *((size_t *)ptr) = size;
@@ -81,6 +82,7 @@ void *zmcalloc(size_t numElements, size_t elementSize)
     if (!ptr)
     {
         zmmalloc_oom_handler(elementSize);
+        return NULL;
     }
 
     *((size_t *)ptr) = elementSize;
@@ -106,6 +108,7 @@ void *zmrealloc(void *ptr, size_t size)
     if (!newptr)
     {
         zmalloc_oom_handler(size);
+        return NULL;
     }
 
     *((size_t *)newptr) = size;
@@ -140,6 +143,7 @@ void *zmsmalloc(size_t size, int defaultValue)
     if (!ptr)
     {
         zmalloc_oom_handler(size);
+        return NULL;
     }
 
     ptr = memset(ptr, defaultValue, size);

@@ -14,8 +14,31 @@
 #define __xstr(s) __str(s)
 #define __str(s) #s
 
+/*****************************************************************************
+* Function: zmmalloc 
+* Description: malloc memroy
+* Param: size memroy size
+* Output: None
+* Return: void *
+***************************************************************************/
 void *zmmalloc(size_t size);
+
+/*****************************************************
+ * @brief resize memeory
+ * 
+ * @param numElements number of element
+ * @param elementSize element of signgle element
+ * @return void*
+ ******************************************************/
 void *zmcalloc(size_t numElements, size_t elementSize);
+
+/*****************************************************
+ * @brief 
+ * 
+ * @param ptr 
+ * @param size 
+ * @return void* 
+ ******************************************************/
 void *zmrealloc(void *ptr, size_t size);
 void zmfree(void *ptr);
 void *zmsmalloc(size_t size, int defaultValue);

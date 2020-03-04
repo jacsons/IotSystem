@@ -38,7 +38,5 @@
     var = value; \
     pthread_mutex_unlock(&var ## _mutex); \
 } while(0)
-#define REDIS_ATOMIC_API "pthread-mutex"
-
 
 #endif
