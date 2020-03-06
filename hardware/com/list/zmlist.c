@@ -195,20 +195,27 @@ int list_pop(list_t *list, int pos, void **data_ptr)
 
 int list_get_node(list_t list, int pos, node_t **node)
 {
-
-
+    node_t *head = NULL;
+    int i;
+    for (i = 0, head = list->head; head; head = head->next, i++) {
+        if (i == pos) {
+            *node = head;
+            return 0;
+        }
+    }
+    *node = NULL;
+    return -1;
 }
 
 int list_get(list_t *list, int pos, void **data_ptr)
 {
+    int ret;
     node_t *head = NULL;
-    int i;
 
-    for (i = 0, head = list->head; head; head = head->next, i++) {
-        if (i == pos) {
-            *data_ptr = head->data;
-            return 0;
-        }
+    ret = list_get_node(list, pos, &node);
+    if (ret == 0) {
+        *dataptr = node->data;
+        return 0;
     }
 
     return -1;
@@ -247,64 +254,23 @@ void list_extend(list_t *list_a, list_t *list_b)
 
 int list_swap(list_t *list, int pos_a, int pos_b)
 {
-    node_t *t;
-    node_t *a_pre = 0, *b_pre = 0, *a = 0, *b = 0, *head = list->head;
-    int i;
+    int ret;
+    node_t *node_a = NULL;
+    node_t *node_b = NULL;
+    void *data = NULL;
 
-    if (pos_a == 0)
-        a = head;
-    if (pos_b == 0)
-        b = head;
+    list_get_node(list, pos_a, &node_a);
+    list_get_node(list, pos_b, &node_b);
 
-    for (t = head, i = 0; t; t = t->next, i++)
-    {
-        if (i == pos_a - 1)
-        {
-            a_pre = t;
-            a = t->next;
-        }
-        if (i == pos_b - 1)
-        {
-            b_pre = t;
-            b = t->next;
-        }
+    if ((node_a == NULL) || (node_b == NULL)) {
+        return -1;
     }
 
-    if (!a || !b)
-        return 0; //wrong input position
-    if (a == b)
-        return 0; //do not swap the same node
+    data = node_a->data;
+    node_a->data = node_b->data;
+    node_b->data = data;
 
-    //change pre node's next
-    if (a == head)
-    {
-        list->head = b;
-        b_pre->next = a;
-    }
-    else if (b == head)
-    {
-        list->head = a;
-        a_pre->next = b;
-    }
-    else
-    {
-        a_pre->next = b;
-        b_pre->next = a;
-    }
-
-    //change a and b's next
-    t = a->next;
-    a->next = b->next;
-    b->next = t;
-    return 1;
-}
-
-void list_reverse(list_t *list)
-{
-    node_t *q = 0, *t, *m = list->head;
-    for (; m; t = m->next, m->next = q, q = m, m = t)
-        ;
-    list->head = q;
+    return 0;
 }
 
 int list_index(list_t *list, void *data)
@@ -314,33 +280,23 @@ int list_index(list_t *list, void *data)
 
     for (; t; t = t->next, i++)
     {
-        if (t->data == data)
+        if (list->listOperator.list_compare_func(t->data, data)) {
             return i;
+        }
     }
     return -1;
 }
 
-void list_cycle(list_t *list, void **data_ptr, int *pos_ptr)
-{
-    static node_t *p = NULL;
-    if (!p)
-        p = list->head;
-
-    *data_ptr = p->data;                   //get data
-    *pos_ptr = get_index_by_node(list, p); //get index
-    //move
-    p = p->next;
-}
-
 int list_from_array(list_t *list, void *ptr, int size, int len)
 {
-    if (list->head)
-        return 0; //list is not empty
-
     int i;
     node_t *t;
 
-    list->head = new_node(ptr); //init head
+    if (list->head) {
+        return -1; 
+    }
+
+    list->head = new_node(ptr); 
 
     for (i = 1, t = list->head; i < len; i++, t = t->next)
     {
