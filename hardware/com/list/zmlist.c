@@ -81,7 +81,7 @@ void list_create(list_t **list, Zmlist_operator_t *listOperator)
 static void list_free_node(list_t *list, void *node)
 {
     list->listOperator.list_destory_func(node->data);
-    free(node);
+    zmfree(node);
 }
 
 void list_destory(list_t *list)
@@ -100,7 +100,7 @@ void list_destory(list_t *list)
         node = nodeNext;
     }
 
-    free(list);
+    zmfree(list);
 }
 
 int list_len(list_t *list)
@@ -136,22 +136,20 @@ void list_append(list_t *list, void *data)
     node_t *head = NULL;
     node_t *node = NULL;
 
-    head = list->head;
     node = new_node(data);
+    head = list->head;
 
-    while ((head != NULL) && (head->next != NULL))
-    {
-        head = head->next;
-    }
-
-    if (head == NULL)
-    {
+    if (head == NULL) {
         list->head = node;
         return;
     }
 
-    node->pre = head;
+    while (head->next != NULL) {
+        head = head->next;
+    }
+
     head->next = node;
+    node->pre = head;
 }
 
 int list_pop_tail(list_t *list, void **data_ptr)
@@ -161,23 +159,17 @@ int list_pop_tail(list_t *list, void **data_ptr)
     *data_ptr = NULL;
     head = list->head;
 
-    if (head == NULL)
-    {
+    if (head == NULL) {
         return -1;
     }
 
-    while (head->next != NULL)
-    {
+    while (head->next != NULL) {
         head = head->next;
     }
 
-    if (head->pre->next != NULL)
-    {
-        head->pre->next = NULL;
-    }
-
+    head->pre->next = NULL;
     *data_ptr = head->data;
-    free(head);
+    zmfree(head);
 
     return 0;
 }
@@ -188,102 +180,75 @@ int list_pop(list_t *list, int pos, void **data_ptr)
     node_t *head = list->head;
 
     *data_ptr = NULL;
-    if (list->head == NULL)
-    {
+    if (list->head == NULL) {
         return -1;
     }
 
-    head = list->head;
-    while ((head != NULL) && (i++ != pos) && (head->next != NULL))
-    {
-        head = head->next;
-    }
+    list->head = head->next;
+    head->next->pre = NULL;
 
-    if (head->next == NULL && (i != pos))
-    {
-        return -1;
-    }
-
-    // means first element
-    if (head->pre->next != NULL)
-    {
-        head->pre->next = NULL;
-    }
+    *data_ptr = head->data;
+    zmfree(data);
 
     return 1;
 }
 
-int list_iter(list_t *list, void **data_ptr, int *pos_ptr)
+int list_get_node(list_t list, int pos, node_t **node)
 {
-    static node_t *p = NULL;
-    static int flag = 0;
 
-    if (!flag)
-    { //p init to head node when the first time
-        p = list->head;
-        flag = 1;
-    }
 
-    if (!p)
-    {
-        flag = 0;
-        return 0;
-    }
-    *data_ptr = p->data;                   //get data
-    *pos_ptr = get_index_by_node(list, p); //get index
-    //move next
-    p = p->next;
-    return 1;
 }
 
 int list_get(list_t *list, int pos, void **data_ptr)
 {
-    node_t *head = list->head;
-    int i = 0;
+    node_t *head = NULL;
+    int i;
 
-    for (; head; head = head->next, i++)
-    {
-        if (i == pos)
-        {
+    for (i = 0, head = list->head; head; head = head->next, i++) {
+        if (i == pos) {
             *data_ptr = head->data;
-            return 1;
+            return 0;
         }
     }
-    return 0;
+
+    return -1;
 }
 
 int list_set(list_t *list, int pos, void *data)
 {
-    node_t *t;
+    node_t *nodeTemp;
     int i;
 
-    for (t = list->head, i = 0; t; t = t->next, i++)
+    for (nodeTemp = list->head, i = 0; nodeTemp; nodeTemp = nodeTemp->next, i++)
     {
-        if (i == pos)
-        {
-            t->data = data;
-            return 1;
+        if (i == pos) {
+            list->listOperator->list_destory_func(nodeTemp->data);
+            nodeTemp->data = data;
+            return 0;
         }
     }
-    return 0;
+    return -1;
 }
 
 void list_extend(list_t *list_a, list_t *list_b)
 {
     node_t *t;
-    if (list_a->head == NULL)
+
+    if (list_a->head == NULL) {
         list_a->head = list_b->head;
-    else
-    {
-        for (t = list_a->head; t->next; t = t->next)
-            ;
+    } else { 
+        for (t = list_a->head; t->next; t = t->next){
+
+        }
         t->next = list_b->head;
+        list_b->head->pre = t->next;
     }
 }
 
 int list_swap(list_t *list, int pos_a, int pos_b)
 {
-    node_t *t, *a_pre = 0, *b_pre = 0, *a = 0, *b = 0, *head = list->head;
+    node_t *t;
+    node_t *a_pre = 0, *b_pre = 0, *a = 0, *b = 0, *head = list->head;
     int i;
 
     if (pos_a == 0)
