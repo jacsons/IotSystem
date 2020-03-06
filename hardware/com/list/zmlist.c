@@ -55,7 +55,7 @@ static int list_default_destory(void *data)
 
 static node_t *new_node(void *data)
 {
-    node_t *node = (node_t *)malloc(sizeof(node_t));
+    node_t *node = (node_t *)zmsmalloc(sizeof(node_t));
     node->data = data;
     node->next = NULL;
     node->pre = NULL;
@@ -78,11 +78,36 @@ void list_create(list_t **list, Zmlist_operator_t *listOperator)
     newList->listOperator.list_destory_func = (listOperator->list_destory_func == NULL ? list_default_destory : listOperator->list_destory_func);
 }
 
+static void list_free_node(list_t *list, void *node)
+{
+    list->listOperator.list_destory_func(node->data);
+    free(node);
+}
+
+void list_destory(list_t *list)
+{
+    node_t *node = NULL;
+    node_t *nodeNext = NULL;
+
+    if (list == NULL) {
+        return;
+    }
+
+    node = list->head;
+    while(node != NULL){
+        nodeNext = node->next;
+        list_free_node(node);
+        node = nodeNext;
+    }
+
+    free(list);
+}
+
 int list_len(list_t *list)
 {
     int i = 0;
-    node_t *head = list->head;
 
+    node_t *head = list->head;
     while (head)
     {
         head = head->next;
@@ -152,7 +177,6 @@ int list_pop_tail(list_t *list, void **data_ptr)
     }
 
     *data_ptr = head->data;
-    list->list_destory_func(head->data);
     free(head);
 
     return 0;

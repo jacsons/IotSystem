@@ -30,6 +30,7 @@ typedef struct Zmlist_operator {
  * @param listOperator list operator function
  ******************************************************/
 void list_create(list_t **list, Zmlist_operator_t *listOperator);
+void list_destory(list_t *list)
 void list_append(list_t *list, void *data);
 int list_len(list_t *list);
 int list_get(list_t *list, int position, void **data_ptr);
