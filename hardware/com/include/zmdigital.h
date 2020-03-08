@@ -12,5 +12,4 @@
 
 #define compare(a, b) (a) < (b) ? -1 : ((a) == (b) ? 0 : 1)
 
-
 #endif // __ZM_DIGITAL_H__

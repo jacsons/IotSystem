@@ -1,3 +1,12 @@
+/*****************************************************************************
+* Copyright: 2020-2030, ***oak***
+* file name: 
+* Description: 
+* Author: oak
+* Version: v-0.0.1
+* Date: 2020-03-08 16:52:52
+* History: 
+***************************************************************************/
 // IOT LOG FILE
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,8 +19,6 @@
 #include "log_util.h"
 #include "zmerror.h"
 #include "common.h"
-
-
 
 #define SPRINT_LOG_BUFF_LEN 512
 #define SPRINT_LOG_TIME_LEN 40
@@ -89,7 +96,6 @@ int main(int argc, const char *argv[])
 {
 
 	init_file_point();
-
 	int i = 8, j = 5;
 	my_debug("i+j = %d\n",i+j);
 

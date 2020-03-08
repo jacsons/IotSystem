@@ -1,39 +1,26 @@
 /*****************************************************************************
-* Copyright: 2020-2030, ***oak***
-* file name: 
-* Description: 
-* Author: oak
-* Version: v-0.0.1
-* Date: 2020-03-01 10:45:40
-* History: 
-***************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <pthread.h>
+ * Copyright: 2020-2030, ***oak***
+ * file name:
+ * Description:
+ * Author: oak
+ * Version: v-0.0.1
+ * Date: 2020-03-01 10:45:40
+ * History:
+ ***************************************************************************/
 #include "zmlist.h"
 #include "zmdigital.h"
 #include "zmmalloc.h"
-
-typedef struct node
-{
-    void *data;
-    struct node *next;
-    struct node *pre;
-} node_t;
-
-typedef struct list
-{
-    node_t *head;
-    Zmlist_operator_t listOperator;
-} list_t;
+#include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /*****************************************************
  * @brief default compare function
- * 
- * @param first_data 
- * @param second_data 
- * @return int 
+ *
+ * @param first_data
+ * @param second_data
+ * @return int
  ******************************************************/
 static int list_default_compare(void *first_data, void *second_data)
 {
@@ -43,15 +30,9 @@ static int list_default_compare(void *first_data, void *second_data)
     return compare(first_addr, second_addr);
 }
 
-static int list_default_equal(void *first_data, void *second_data)
-{
-    return first_data == second_data ? 0 : -1;
-}
+static int list_default_equal(void *first_data, void *second_data) { return first_data == second_data ? 0 : -1; }
 
-static int list_default_destory(void *data)
-{
-    free(data);
-}
+static int list_default_destory(void *data) { free(data); }
 
 static node_t *new_node(void *data)
 {
@@ -63,19 +44,29 @@ static node_t *new_node(void *data)
     return node;
 }
 
+static void list_insert_node(node_t *new_node, node_t *preNode, node_t *currentNode)
+{
+    preNode->next = new_node;
+    new_node->pre = preNode;
+    new_node->next = currentNode;
+    currentNode->pre = new_node;
+}
+
 void list_create(list_t **list, Zmlist_operator_t *listOperator)
 {
     list_t *newList = NULL;
 
     newList = zmsmalloc(sizeof(list_t), 0);
-    if (newList == NULL)
-    {
+    if (newList == NULL) {
         return;
     }
 
-    newList->listOperator.list_compare_func = (listOperator->list_compare_func == NULL ? list_default_compare : listOperator->list_compare_func);
-    newList->listOperator.list_is_equal_func = (listOperator->list_is_equal_func == NULL ? list_default_equal : listOperator->list_is_equal_func);
-    newList->listOperator.list_destory_func = (listOperator->list_destory_func == NULL ? list_default_destory : listOperator->list_destory_func);
+    newList->listOperator.list_compare_func
+        = (listOperator->list_compare_func == NULL ? list_default_compare : listOperator->list_compare_func);
+    newList->listOperator.list_is_equal_func
+        = (listOperator->list_is_equal_func == NULL ? list_default_equal : listOperator->list_is_equal_func);
+    newList->listOperator.list_destory_func
+        = (listOperator->list_destory_func == NULL ? list_default_destory : listOperator->list_destory_func);
 }
 
 static void list_free_node(list_t *list, void *node)
@@ -94,7 +85,7 @@ void list_destory(list_t *list)
     }
 
     node = list->head;
-    while(node != NULL){
+    while (node != NULL) {
         nodeNext = node->next;
         list_free_node(node);
         node = nodeNext;
@@ -108,8 +99,7 @@ int list_len(list_t *list)
     int i = 0;
 
     node_t *head = list->head;
-    while (head)
-    {
+    while (head) {
         head = head->next;
         i++;
     }
@@ -122,8 +112,7 @@ int list_find(list_t *list, void *node_data)
     int i = -1;
     node_t *head = list->head;
 
-    while ((head != NULL) && (list->listOperator.list_is_equal_func(head->data, node_data) == 0))
-    {
+    while ((head != NULL) && (list->listOperator.list_is_equal_func(head->data, node_data) == 0)) {
         i++;
         head = head->next;
     }
@@ -169,6 +158,7 @@ int list_pop_tail(list_t *list, void **data_ptr)
 
     head->pre->next = NULL;
     *data_ptr = head->data;
+
     zmfree(head);
 
     return 0;
@@ -188,6 +178,7 @@ int list_pop(list_t *list, int pos, void **data_ptr)
     head->next->pre = NULL;
 
     *data_ptr = head->data;
+
     zmfree(data);
 
     return 1;
@@ -197,12 +188,14 @@ int list_get_node(list_t list, int pos, node_t **node)
 {
     node_t *head = NULL;
     int i;
+
     for (i = 0, head = list->head; head; head = head->next, i++) {
         if (i == pos) {
             *node = head;
             return 0;
         }
     }
+
     *node = NULL;
     return -1;
 }
@@ -223,32 +216,38 @@ int list_get(list_t *list, int pos, void **data_ptr)
 
 int list_set(list_t *list, int pos, void *data)
 {
-    node_t *nodeTemp;
+    node_t *nodeTemp = NULL;
+    node_t *newNode = NULL;
     int i;
 
-    for (nodeTemp = list->head, i = 0; nodeTemp; nodeTemp = nodeTemp->next, i++)
-    {
+    for (nodeTemp = list->head, i = 0; nodeTemp; nodeTemp = nodeTemp->next, i++) {
         if (i == pos) {
-            list->listOperator->list_destory_func(nodeTemp->data);
-            nodeTemp->data = data;
-            return 0;
+            break;
         }
     }
-    return -1;
+
+    if (nodeTemp == NULL) {
+        return -1;
+    }
+
+    newNode = new_node(data);
+    list_insert_node(new_node, nodeTemp->pre, nodeTemp);
+
+    return 0;
 }
 
 void list_extend(list_t *list_a, list_t *list_b)
 {
-    node_t *t;
+    node_t *node = NULL;
 
     if (list_a->head == NULL) {
         list_a->head = list_b->head;
-    } else { 
-        for (t = list_a->head; t->next; t = t->next){
-
+    } else {
+        for (node = list_a->head; node->next; node = node->next) {
         }
-        t->next = list_b->head;
-        list_b->head->pre = t->next;
+
+        node->next = list_b->head;
+        list_b->head->pre = node->next;
     }
 }
 
@@ -278,8 +277,7 @@ int list_index(list_t *list, void *data)
     node_t *t = list->head;
     int i = 0;
 
-    for (; t; t = t->next, i++)
-    {
+    for (; t; t = t->next, i++) {
         if (list->listOperator.list_compare_func(t->data, data)) {
             return i;
         }
@@ -293,13 +291,56 @@ int list_from_array(list_t *list, void *ptr, int size, int len)
     node_t *t;
 
     if (list->head) {
-        return -1; 
+        return -1;
     }
 
-    list->head = new_node(ptr); 
+    list->head = new_node(ptr);
 
-    for (i = 1, t = list->head; i < len; i++, t = t->next)
-    {
+    for (i = 1, t = list->head; i < len; i++, t = t->next) {
         t->next = new_node(ptr + size * i);
     }
+}
+
+int list_iter_int(list_t *list, list_iter_t **list_iter)
+{
+    list_iter_t *listIter = NULL;
+
+    if (list == NULL) {
+        return -1;
+    }
+
+    listIter = zmsmalloc(sizeof(list_iter_t), 0);
+    if (listIter == NULL) {
+        return -1;
+    }
+
+    listIter->list = list;
+    listIter->currentNode = list->head;
+
+    *list_iter = listIter;
+
+    return 0;
+}
+
+node_t *list_iter_next(list_iter_t *list_iter)
+{
+    node_t *nodeTemp = NULL;
+
+    if (list_iter == NULL || list_iter->currentNode = NULL) {
+        return NULL;
+    }
+
+    nodeTemp = list_iter->currentNode;
+    list_iter->currentNode = list_iter->currentNode->next;
+
+    return nodeTemp;
+}
+
+void list_iter_destory(list_iter_t *list_iter)
+{
+    if (list_iter == NULL) {
+        return 0;
+    }
+
+    zmfree(list_iter);
 }
